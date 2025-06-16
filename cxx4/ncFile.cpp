@@ -5,6 +5,7 @@
 #include<iostream>
 #include<string>
 #include<sstream>
+#include<vector>
 using namespace std;
 using namespace netCDF;
 using namespace netCDF::exceptions;
@@ -174,4 +175,15 @@ void NcFile::redef(){
 // Leave define mode, used for classic model
 void NcFile::enddef() {
     ncCheck(nc_enddef(myId),__FILE__,__LINE__);
+}
+
+string NcFile::getPath() const
+{
+    size_t pathLength;
+    ncCheck(nc_inq_path(myId, &pathLength, NULL),__FILE__,__LINE__);
+
+    vector<char> pathCString(pathLength + 1);
+    ncCheck(nc_inq_path(myId, NULL, pathCString.data()),__FILE__,__LINE__);
+
+    return string(pathCString.data());
 }
